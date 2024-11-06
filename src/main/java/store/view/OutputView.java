@@ -10,6 +10,10 @@ public class OutputView {
     private static final String SPACE = " ";
     private static final DecimalFormat PRICE_FORMAT = new DecimalFormat("#,###");
 
+    public static void printWelcomeMessage() {
+        System.out.println("안녕하세요. W편의점입니다.");
+    }
+
     public static void printProducts(List<Product> products) {
         System.out.println("현재 보유하고 있는 상품입니다.\n");
         for (Product product : products) {
