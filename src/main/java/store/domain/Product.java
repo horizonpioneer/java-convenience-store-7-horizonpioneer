@@ -30,6 +30,13 @@ public class Product {
         return promotion;
     }
 
+    public void decreaseStock(int amount) {
+        if (!hasStock(amount)) {
+            throw new IllegalArgumentException("재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
+        }
+        quantity -= amount;
+    }
+
     private boolean hasStock(int purchaseQuantity) {
         return quantity > purchaseQuantity;
     }
