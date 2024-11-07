@@ -19,7 +19,7 @@ public class Converter {
     }
 
     public static LocalDate convertStringToLocalDate(String input) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         formatter = formatter.withLocale(Locale.KOREA);
         return LocalDate.parse(input, formatter);
     }
