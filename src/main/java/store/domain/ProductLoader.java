@@ -13,18 +13,18 @@ public class ProductLoader {
 
     private static final String COMMA = ",";
 
-    public static List<Product> loadProducts(String filePath) {
+    public static List<Product> readProducts(String filePath) {
         List<Product> products = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             reader.readLine(); // 첫 줄 건너뜀
-            loadProducts(reader, products);
+            readProducts(reader, products);
         } catch (IOException e) {
             throw new UncheckedIOException("파일로부터 상품 정보를 불러오는데 실패했습니다.", e);
         }
         return products;
     }
 
-    private static void loadProducts(BufferedReader reader, List<Product> products) throws IOException {
+    private static void readProducts(BufferedReader reader, List<Product> products) throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
             products.add(getProduct(line));
