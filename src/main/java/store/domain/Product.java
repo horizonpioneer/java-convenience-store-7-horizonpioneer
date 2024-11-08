@@ -5,13 +5,13 @@ public class Product {
     private final String name;
     private final int price;
     private int quantity;
-    private final String promotion;
+    private final String promotionName;
 
-    public Product(String name, int price, int quantity, String promotion) {
+    public Product(String name, int price, int quantity, String promotionName) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
-        this.promotion = promotion;
+        this.promotionName = promotionName;
     }
 
     public String getName() {
@@ -26,8 +26,8 @@ public class Product {
         return quantity;
     }
 
-    public String getPromotion() {
-        return promotion;
+    public String getPromotionName() {
+        return promotionName;
     }
 
     public void decreaseStock(int amount) {
@@ -35,6 +35,10 @@ public class Product {
             throw new IllegalArgumentException("재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
         }
         quantity -= amount;
+    }
+
+    public boolean isEqualPromotion(Promotion promotion) {
+        return promotionName.equals(promotion.getName());
     }
 
     private boolean hasStock(int purchaseQuantity) {
