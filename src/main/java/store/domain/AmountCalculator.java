@@ -11,4 +11,12 @@ public class AmountCalculator {
         }
         return totalPurchaseAmount;
     }
+
+    public int calculatePromotionDiscount(int purchaseAmount, Product product, Promotion promotion) {
+        if (product.getPromotionName().equals(promotion.getName())) {
+            int freeItemCount = purchaseAmount / promotion.getGetCondition();
+            return product.getPrice() * freeItemCount;
+        }
+        return 0;
+    }
 }
