@@ -29,6 +29,18 @@ public class AmountCalculator {
         return Math.min(discount, 8000);
     }
 
+    public int calculateAmountToPay(List<Product> products, Promotion promotion) {
+        int totalPurchaseAmount = calculateTotalPurchaseAmount(products);
+        int totalDiscount = 0;
+        for (Product product : products) {
+            int promotionDiscount = calculatePromotionDiscount(totalPurchaseAmount, product, promotion);
+            totalDiscount += promotionDiscount;
+        }
+        totalDiscount += calculateMembershipDiscount(products);
+
+        return totalPurchaseAmount - totalDiscount;
+    }
+
     private List<Product> filterProductsWithoutPromotion(List<Product> products) {
         List<Product> productWithNoPromo = products.stream()
                 .filter(product -> product.getPromotionName().equals("null"))
