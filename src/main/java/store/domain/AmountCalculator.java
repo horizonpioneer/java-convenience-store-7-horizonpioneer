@@ -1,6 +1,7 @@
 package store.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AmountCalculator {
 
@@ -18,5 +19,16 @@ public class AmountCalculator {
             return product.getPrice() * freeItemCount;
         }
         return 0;
+    }
+
+    private List<Product> filterProductsWithoutPromotion(List<Product> products) {
+        List<Product> productWithNoPromo = products.stream()
+                .filter(product -> product.getPromotionName().equals("null"))
+                .toList();
+
+        return productWithNoPromo.stream()
+                .filter(product -> products.stream()
+                        .noneMatch(otherProduct -> !otherProduct.getPromotionName().equals("null") && otherProduct.getName().equals(product.getName())))
+                .collect(Collectors.toList());
     }
 }
