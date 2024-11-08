@@ -21,6 +21,14 @@ public class AmountCalculator {
         return 0;
     }
 
+    public int calculateMembershipDiscount(List<Product> products) {
+        List<Product> productsWithoutPromotion = filterProductsWithoutPromotion(products);
+        int totalAmount = calculateTotalPurchaseAmount(productsWithoutPromotion);
+        int discount = (totalAmount * 30) / 100;
+
+        return Math.min(discount, 8000);
+    }
+
     private List<Product> filterProductsWithoutPromotion(List<Product> products) {
         List<Product> productWithNoPromo = products.stream()
                 .filter(product -> product.getPromotionName().equals("null"))
