@@ -30,7 +30,9 @@ public class PromotionLoader {
     private static void readPromotions(BufferedReader reader, List<Promotion> promotions) throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
-            promotions.add(getPromotion(line));
+            if (getPromotion(line) != null) {
+                promotions.add(getPromotion(line));
+            }
         }
     }
 
@@ -39,9 +41,11 @@ public class PromotionLoader {
         String name = values[0];
         int buyCondition = Converter.convertStringToInt(values[1]);
         int getCondition = Converter.convertStringToInt(values[2]);
-        boolean isTodayInRange = validateTodayInRange(values);
 
-        return new Promotion(name, buyCondition, getCondition, isTodayInRange);
+        if (validateTodayInRange(values)) {
+            return new Promotion(name, buyCondition, getCondition);
+        }
+        return null;
     }
 
     private static boolean validateTodayInRange(String[] values) {
