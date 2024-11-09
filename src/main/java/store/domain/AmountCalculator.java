@@ -14,7 +14,7 @@ public class AmountCalculator {
     }
 
     public int calculatePromotionDiscount(int purchaseAmount, Product product, Promotion promotion) {
-        if (product.getPromotionName().equals(promotion.getName())) {
+        if (product.isEqualPromotionName(promotion.getName())) {
             int freeItemCount = purchaseAmount / promotion.getGetCondition();
             return product.getPrice() * freeItemCount;
         }
