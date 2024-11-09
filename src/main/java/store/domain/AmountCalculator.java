@@ -8,7 +8,7 @@ public class AmountCalculator {
     public int calculateTotalPurchaseAmount(List<Product> products) {
         int totalPurchaseAmount = 0;
         for (Product product : products) {
-            totalPurchaseAmount += product.getPrice() * product.getQuantity();
+            totalPurchaseAmount += product.getPrice() * (product.getStock() + product.getPromotionStock());
         }
         return totalPurchaseAmount;
     }
