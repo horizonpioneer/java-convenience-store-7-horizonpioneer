@@ -14,13 +14,13 @@ import java.util.Map;
 public class ProductLoader {
     private static final String COMMA = ",";
 
-    public static List<Product> loadProducts(String filePath, List<Promotion> promotions) {
+    public static List<Product> loadProducts(String filePath) {
         Map<String, Product> productMap = new LinkedHashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
-                processLine(line, productMap, promotions);
+                processLine(line, productMap);
             }
         } catch (IOException e) {
             throw new UncheckedIOException("상품 목록으로부터 상품 정보를 읽어올 수 없습니다.", e);
@@ -28,7 +28,7 @@ public class ProductLoader {
         return new ArrayList<>(productMap.values());
     }
 
-    private static void processLine(String line, Map<String, Product> productMap, List<Promotion> promotions) {
+    private static void processLine(String line, Map<String, Product> productMap) {
         String[] values = line.split(COMMA);
         String name = values[0];
         int price = Converter.convertStringToInt(values[1]);
