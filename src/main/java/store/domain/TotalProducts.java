@@ -20,4 +20,8 @@ public class TotalProducts {
                 )
                 .orElseThrow(() -> new IllegalArgumentException("구매를 원하시는 상품이 매장에 존재하지 않습니다."));
     }
+
+    private void reduceProductQuantity(Product product, int amount) {
+        product.decreaseStock(amount);
+    }
 }
