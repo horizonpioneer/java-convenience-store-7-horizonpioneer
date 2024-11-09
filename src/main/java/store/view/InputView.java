@@ -7,4 +7,8 @@ public class InputView {
     public static String inputProductNameAndQuantity() {
         return Console.readLine();
     }
+
+    public static String askIfAddRemainingQuantityForPromotion() {
+        return Console.readLine();
+    }
 }
