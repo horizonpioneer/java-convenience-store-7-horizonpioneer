@@ -11,4 +11,8 @@ public class InputView {
     public static String askIfAddRemainingQuantityForPromotion() {
         return Console.readLine();
     }
+
+    public static String askIfPayFullPriceForSomeQuantity() {
+        return Console.readLine();
+    }
 }
