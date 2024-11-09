@@ -10,6 +10,12 @@ public class TotalProducts {
         this.totalProducts = totalProducts;
     }
 
+    public Product extractProduct(String name, int quantity) {
+        Product product = findProduct(name);
+        reduceProductQuantity(product, quantity);
+        return product;
+    }
+
     private Product findProduct(String name) {
         return totalProducts.stream()
                 .filter(product -> product.isEqualName(name) && !product.isEqualName("null"))
