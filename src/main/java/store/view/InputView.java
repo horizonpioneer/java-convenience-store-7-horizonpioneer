@@ -15,4 +15,8 @@ public class InputView {
     public static String askIfPayFullPriceForSomeQuantity() {
         return Console.readLine();
     }
+
+    public static String askIfApplyMembershipDiscount() {
+        return Console.readLine();
+    }
 }
