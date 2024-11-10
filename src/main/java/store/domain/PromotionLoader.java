@@ -1,7 +1,6 @@
 package store.domain;
 
 import store.util.Converter;
-import store.util.DateUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -41,17 +40,10 @@ public class PromotionLoader {
         String name = values[0];
         int buyCondition = Converter.convertStringToInt(values[1]);
         int getCondition = Converter.convertStringToInt(values[2]);
-
-        if (validateTodayInRange(values)) {
-            return new Promotion(name, buyCondition, getCondition);
-        }
-        return null;
-    }
-
-    private static boolean validateTodayInRange(String[] values) {
         LocalDate startDate = Converter.convertStringToLocalDate(values[3]);
         LocalDate endDate = Converter.convertStringToLocalDate(values[4]);
 
-        return DateUtil.isTodayInRange(startDate, endDate);
+        return new Promotion(name, buyCondition, getCondition, startDate, endDate);
+
     }
 }
