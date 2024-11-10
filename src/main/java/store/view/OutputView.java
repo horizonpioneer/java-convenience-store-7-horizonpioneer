@@ -50,6 +50,18 @@ public class OutputView {
         }
     }
 
+    public static void printTotalPurchaseAmount(ShoppingCart shoppingCart, TotalProducts totalProducts) {
+        System.out.println("====================================");
+        int totalQuantity = 0;
+        int totalPrice = 0;
+        for (PurchaseItemDto item : shoppingCart.getItems()) {
+            totalQuantity += item.getQuantity();
+            totalPrice += item.calculatePrice(totalProducts);
+        }
+        System.out.println("총구매액\t\t" + totalQuantity + "\t" + totalPrice);
+        System.out.println();
+    }
+
     private static String formatProductInfo(Product product) {
         return formatPromotionStockInfo(product) + formatRegularStockInfo(product);
     }
