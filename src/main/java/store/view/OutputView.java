@@ -3,9 +3,11 @@ package store.view;
 import store.domain.Product;
 import store.domain.ShoppingCart;
 import store.domain.TotalProducts;
+import store.dto.AdditionalBonusDto;
 import store.dto.PurchaseItemDto;
 
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
@@ -38,6 +40,13 @@ public class OutputView {
         System.out.printf("%-10s\t%-7s\t%10s%n", "상품명", "수량", "금액");
         for (PurchaseItemDto item : shoppingCart.getItems()) {
             System.out.printf("%-15s\t%d\t%,15d%n", item.getName(), item.getQuantity(), item.calculatePrice(totalProducts));
+        }
+    }
+
+    public static void printGiftProductInfo(List<AdditionalBonusDto> dtos) {
+        System.out.println("=============증\t\t정===============");
+        for (AdditionalBonusDto dto : dtos) {
+            System.out.printf("%-10s\t%-5d%n", dto.getName(), dto.getQuantity());
         }
     }
 
