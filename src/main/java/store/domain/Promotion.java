@@ -16,19 +16,11 @@ public class Promotion {
         return name;
     }
 
-    public int getBuyCondition() {
-        return buyCondition;
-    }
-
     public int getGetCondition() {
         return getCondition;
     }
 
-    public int calculateBonus(int purchaseQuantity) {
-        if (purchaseQuantity < buyCondition) {
-            return 0;
-        }
-        return (purchaseQuantity / buyCondition) * getCondition;
+    public int calculateAdditionalBonus(int purchaseQuantity) {
+        return (buyCondition + getCondition) * (purchaseQuantity / buyCondition) - purchaseQuantity;
     }
-
 }
