@@ -1,9 +1,9 @@
 package store.view;
 
 import store.domain.Product;
+import store.domain.TotalProducts;
 
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
@@ -14,11 +14,12 @@ public class OutputView {
         System.out.println("안녕하세요. W편의점입니다.");
     }
 
-    public static void printProductInfo(List<Product> products) {
+    public static void printProductInfo(TotalProducts totalProducts) {
         System.out.println("현재 보유하고 있는 상품입니다.\n");
-        for (Product product : products) {
+        for (Product product : totalProducts.getTotalProducts()) {
             System.out.print(formatProductInfo(product));
         }
+        System.out.println();
     }
 
     public static void requestProductAndQuantity() {
