@@ -24,6 +24,12 @@ public class ShoppingCart {
         return new ArrayList<>(items);
     }
 
+    public int calculateTotalPrice(TotalProducts totalProducts) {
+        return items.stream()
+                .mapToInt(item -> totalProducts.findProduct(item.getName()).getPrice() * item.getQuantity())
+                .sum();
+    }
+
     public int calculateNonPromotionTotalPrice(TotalProducts totalProducts) {
         return items.stream()
                 .filter(item -> !totalProducts.findProduct(item.getName()).hasPromotion()) // 프로모션이 없는 상품만 선택
