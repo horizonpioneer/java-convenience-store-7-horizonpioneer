@@ -16,6 +16,10 @@ public class Promotion {
         return name;
     }
 
+    public int getBuyCondition() {
+        return buyCondition;
+    }
+
     public int getGetCondition() {
         return getCondition;
     }
