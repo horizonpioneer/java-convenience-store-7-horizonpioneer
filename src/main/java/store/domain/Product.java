@@ -68,6 +68,10 @@ public class Product {
         decreaseRegularStock(amount);
     }
 
+    public int getTotalStock() {
+        return promotionStock + stock;
+    }
+
     private int decreasePromotionStock(int amount) {
         if (promotionStock >= amount) {
             promotionStock -= amount;
