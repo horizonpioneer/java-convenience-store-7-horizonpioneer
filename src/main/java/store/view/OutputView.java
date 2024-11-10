@@ -1,7 +1,9 @@
 package store.view;
 
 import store.domain.Product;
+import store.domain.ShoppingCart;
 import store.domain.TotalProducts;
+import store.dto.PurchaseItemDto;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -28,6 +30,15 @@ public class OutputView {
 
     public static void askForMembershipDiscount() {
         System.out.println("멤버십 할인을 받으시겠습니까? (Y/N)");
+    }
+
+    public static void printPurchaseReceipt(ShoppingCart shoppingCart, TotalProducts totalProducts) {
+
+        System.out.println("==============W 편의점================");
+        System.out.printf("%-10s\t%-7s\t%10s%n", "상품명", "수량", "금액");
+        for (PurchaseItemDto item : shoppingCart.getItems()) {
+            System.out.printf("%-15s\t%d\t%,15d%n", item.getName(), item.getQuantity(), item.calculatePrice(totalProducts));
+        }
     }
 
     private static String formatProductInfo(Product product) {
