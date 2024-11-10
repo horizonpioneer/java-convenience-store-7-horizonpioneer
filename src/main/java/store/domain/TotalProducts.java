@@ -10,13 +10,17 @@ public class TotalProducts {
         this.totalProducts = totalProducts;
     }
 
+    public List<Product> getTotalProducts() {
+        return totalProducts;
+    }
+
     public Product extractProduct(String name, int quantity) {
         Product product = findProduct(name);
         reduceProductQuantity(product, quantity);
         return product;
     }
 
-    private Product findProduct(String name) {
+    public Product findProduct(String name) {
         return totalProducts.stream()
                 .filter(product -> product.isEqualName(name) && !product.isEqualName("null"))
                 .findFirst()
@@ -29,5 +33,19 @@ public class TotalProducts {
 
     private void reduceProductQuantity(Product product, int amount) {
         product.decreaseStock(amount);
+    }
+
+    public int getProductPrice(String productName) {
+        return totalProducts.stream()
+                .filter(product -> product.getName().equals(productName))
+                .mapToInt(Product::getPrice)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 이름을 가진 상품은 없습니다."));
+    }
+
+    public List<Product> selectNonPromotionProducts() {
+        return totalProducts.stream()
+                .filter(product -> product.isEqualPromotionName("null"))
+                .toList();
     }
 }
