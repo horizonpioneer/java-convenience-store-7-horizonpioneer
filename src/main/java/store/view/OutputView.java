@@ -62,6 +62,15 @@ public class OutputView {
         System.out.println();
     }
 
+    public static void printEventDiscount(List<AdditionalBonusDto> dtos) {
+        int totalDiscount = 0;
+        for (AdditionalBonusDto dto : dtos) {
+            totalDiscount += dto.getDiscountAmount();
+        }
+        System.out.println("행사할인\t\t\t" + "-" + totalDiscount);
+    }
+
+
     private static String formatProductInfo(Product product) {
         return formatPromotionStockInfo(product) + formatRegularStockInfo(product);
     }
