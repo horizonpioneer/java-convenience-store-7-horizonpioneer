@@ -48,6 +48,10 @@ public class Product {
         return stock > 0;
     }
 
+    public boolean hasPromotion() {
+        return !promotionName.equals("null");
+    }
+
     public boolean hasPromotionStock() {
         return promotionStock > 0;
     }
