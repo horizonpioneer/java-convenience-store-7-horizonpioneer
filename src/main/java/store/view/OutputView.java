@@ -70,6 +70,10 @@ public class OutputView {
         System.out.println("행사할인\t\t\t" + "-" + totalDiscount);
     }
 
+    public static void printMembershipDiscount(int membershipDiscount) {
+        System.out.println("멤버십할인\t\t\t" + "-" + membershipDiscount);
+    }
+
 
     private static String formatProductInfo(Product product) {
         return formatPromotionStockInfo(product) + formatRegularStockInfo(product);
