@@ -4,6 +4,7 @@ import camp.nextstep.edu.missionutils.Console;
 import store.domain.*;
 import store.dto.AdditionalBonusDto;
 import store.dto.PurchaseItemDto;
+import store.service.FileLoadService;
 import store.util.Converter;
 import store.view.InputView;
 import store.view.OutputView;
@@ -15,11 +16,12 @@ import java.util.List;
 public class ConvenienceController {
 
     private AmountCalculator amountCalculator = new AmountCalculator();
+    private FileLoadService fileLoadService = new FileLoadService();
 
 
     public void run() {
-        Promotions promotions = loadPromotionFile();
-        TotalProducts totalProducts = loadProductFile();
+        Promotions promotions = fileLoadService.loadPromotionFile();
+        TotalProducts totalProducts = fileLoadService.loadProductFile();
 
         boolean continueShopping = true;
         while (continueShopping) {
@@ -100,18 +102,6 @@ public class ConvenienceController {
     private ShoppingCart addPurchaseItemDtos(String productInfo) {
         String[] items = productInfo.split(",");
         return addPurchaseProducts(items);
-    }
-
-    private TotalProducts loadProductFile() {
-        String productFilePath = "src/main/resources/products.md";
-        List<Product> products = ProductLoader.loadProducts(productFilePath);
-        return new TotalProducts(products);
-    }
-
-    private Promotions loadPromotionFile() {
-        String promotionFilePath = "src/main/resources/promotions.md";
-        List<Promotion> promotionList = PromotionLoader.loadPromotions(promotionFilePath);
-        return new Promotions(promotionList);
     }
 
     private ShoppingCart addPurchaseProducts(String[] items) {
