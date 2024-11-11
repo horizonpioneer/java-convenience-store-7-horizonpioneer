@@ -5,6 +5,10 @@ import store.enums.ErrorMessage;
 
 public class InputView {
 
+    private InputView() {
+
+    }
+
     public static String inputProductNameAndQuantity() {
         String input = readLine();
         validateProductInputFormat(input);
