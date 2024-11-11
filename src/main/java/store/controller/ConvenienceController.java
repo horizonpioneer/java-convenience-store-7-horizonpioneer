@@ -38,20 +38,29 @@ public class ConvenienceController {
             int membershipDiscount = getMembershipDiscount(shoppingCart, totalProducts);
 
             // 재고 감소 및 재고 부족 예외 처리
-            try {
-                for (PurchaseItemDto item : shoppingCart.getItems()) {
-                    totalProducts.extractProduct(item.getName(), item.getQuantity());
-                }
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
+            if (!attemptToReduceStock(shoppingCart, totalProducts)) continue;
 
             OutputView.printTotalReceipt(shoppingCart, totalProducts, bonusDtos, membershipDiscount);
 
             OutputView.askIfBuyOtherProducts();
             String otherBuyResponse = Console.readLine();
             continueShopping = otherBuyResponse.equalsIgnoreCase("Y");
+        }
+    }
+
+    private boolean attemptToReduceStock(ShoppingCart shoppingCart, TotalProducts totalProducts) {
+        try {
+            reduceStockForCartItems(shoppingCart, totalProducts);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    private void reduceStockForCartItems(ShoppingCart shoppingCart, TotalProducts totalProducts) {
+        for (PurchaseItemDto item : shoppingCart.getItems()) {
+            totalProducts.extractProduct(item.getName(), item.getQuantity());
         }
     }
 
