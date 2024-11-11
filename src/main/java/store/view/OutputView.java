@@ -34,32 +34,47 @@ public class OutputView {
         System.out.println("멤버십 할인을 받으시겠습니까? (Y/N)");
     }
 
-    public static void printPurchaseReceipt(ShoppingCart shoppingCart, TotalProducts totalProducts) {
+    public static void printTotalReceipt(ShoppingCart shoppingCart, TotalProducts totalProducts,
+                                         List<AdditionalBonusDto> dtos, int membershipDiscount) {
+        printPurchaseReceipt(shoppingCart, totalProducts, dtos);
+        printGiftProductInfo(dtos);
+        printTotalPurchaseAmount(shoppingCart, totalProducts, dtos);
+        printEventDiscount(dtos);
+        printMembershipDiscount(membershipDiscount);
+        printTotalPay(shoppingCart, totalProducts, dtos, membershipDiscount);
+    }
+
+    public static void printPurchaseReceipt(ShoppingCart shoppingCart, TotalProducts totalProducts,
+                                            List<AdditionalBonusDto> dtos) {
 
         System.out.println("==============W 편의점================");
-        System.out.printf("%-10s\t%-7s\t%10s%n", "상품명", "수량", "금액");
+        System.out.printf("%-15s\t%-9s\t%-12s%n", "상품명", "수량", "금액");
         for (PurchaseItemDto item : shoppingCart.getItems()) {
-            System.out.printf("%-15s\t%d\t%,15d%n", item.getName(), item.getQuantity(), item.calculatePrice(totalProducts));
+            int bonusQuantity = getBonusQuantity(dtos, item);
+            int itemTotalQuantity = item.getQuantity() + bonusQuantity;
+            int itemTotalPrice = totalProducts.getProductPrice(item.getName()) * itemTotalQuantity;
+            System.out.printf("%-15s\t%-9d\t%-12d%n", item.getName(), itemTotalQuantity, itemTotalPrice);
         }
     }
 
     public static void printGiftProductInfo(List<AdditionalBonusDto> dtos) {
         System.out.println("=============증\t\t정===============");
         for (AdditionalBonusDto dto : dtos) {
-            System.out.printf("%-10s\t%-5d%n", dto.getName(), dto.getQuantity());
+            System.out.printf("%-15s\t%-9d%n", dto.getName(), dto.getQuantity());
         }
     }
 
-    public static void printTotalPurchaseAmount(ShoppingCart shoppingCart, TotalProducts totalProducts) {
-        System.out.println("====================================");
+    public static void printTotalPurchaseAmount(ShoppingCart shoppingCart, TotalProducts totalProducts,
+                                                List<AdditionalBonusDto> dtos) {
         int totalQuantity = 0;
         int totalPrice = 0;
+        System.out.println("====================================");
         for (PurchaseItemDto item : shoppingCart.getItems()) {
-            totalQuantity += item.getQuantity();
-            totalPrice += item.calculatePrice(totalProducts);
+            int productPrice = totalProducts.getProductPrice(item.getName());
+            totalQuantity += item.getQuantity() + getBonusQuantity(dtos, item);
+            totalPrice += (item.getQuantity() + getBonusQuantity(dtos, item)) * productPrice;
         }
-        System.out.println("총구매액\t\t" + totalQuantity + "\t" + totalPrice);
-        System.out.println();
+        System.out.printf("총구매액%15d%,14d%n", totalQuantity, totalPrice);
     }
 
     public static void printEventDiscount(List<AdditionalBonusDto> dtos) {
@@ -67,17 +82,44 @@ public class OutputView {
         for (AdditionalBonusDto dto : dtos) {
             totalDiscount += dto.getDiscountAmount();
         }
-        System.out.println("행사할인\t\t\t" + "-" + totalDiscount);
+        System.out.printf("행사할인%29s%n", formatPrice(-totalDiscount));
     }
 
     public static void printMembershipDiscount(int membershipDiscount) {
-        System.out.println("멤버십할인\t\t\t" + "-" + membershipDiscount);
+        System.out.printf("멤버십할인%27s%n", formatPrice(-membershipDiscount));
+    }
+
+    public static void printTotalPay(ShoppingCart shoppingCart, TotalProducts totalProducts,
+                                     List<AdditionalBonusDto> dtos, int membershipDiscount) {
+        int totalPrice = 0;
+        for (PurchaseItemDto item : shoppingCart.getItems()) {
+            int bonusQuantity = getBonusQuantity(dtos, item);
+            int productPrice = totalProducts.getProductPrice(item.getName());
+            totalPrice += (item.getQuantity() + bonusQuantity) * productPrice;
+        }
+
+        int totalDiscount = 0;
+        for (AdditionalBonusDto dto : dtos) {
+            totalDiscount += dto.getDiscountAmount();
+        }
+
+        int totalPay = totalPrice - totalDiscount - membershipDiscount;
+        String formatPrice = formatPrice(totalPay);
+        System.out.printf("내실돈%30s%n", formatPrice);
+    }
+
+    private static int getBonusQuantity(List<AdditionalBonusDto> dtos, PurchaseItemDto item) {
+        int bonusQuantity = dtos.stream()
+                .filter(bonus -> bonus.isEqualItemName(item.getName()))
+                .mapToInt(AdditionalBonusDto::getQuantity)
+                .findFirst()
+                .orElse(0);
+        return bonusQuantity;
     }
 
     public static void askIfBuyOtherProducts() {
         System.out.println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
     }
-
 
     private static String formatProductInfo(Product product) {
         return formatPromotionStockInfo(product) + formatRegularStockInfo(product);
