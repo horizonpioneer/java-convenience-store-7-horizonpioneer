@@ -1,5 +1,6 @@
 package store.domain;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class Promotions {
@@ -16,7 +17,7 @@ public class Promotions {
                 return promotion;
             }
         }
-        throw new IllegalArgumentException("해당 프로모션은 진행중인 프로모션이 아닙니다.");
+        return new Promotion("null", 0, 0, LocalDate.MIN, LocalDate.MAX);
     }
 
 
