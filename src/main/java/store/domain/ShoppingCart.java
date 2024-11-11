@@ -12,23 +12,8 @@ public class ShoppingCart {
         this.items = shoppingCart;
     }
 
-    public void addItem(PurchaseItemDto item) {
-        this.items.add(item);
-    }
-
-    public void removeItem(PurchaseItemDto item) {
-        this.items.remove(item);
-    }
-
     public List<PurchaseItemDto> getItems() {
         return new ArrayList<>(items);
-    }
-
-    public int calculateTotalPrice(TotalProducts totalProducts) {
-        return items.stream()
-                .filter(item -> !item.isExcluded())
-                .mapToInt(item -> totalProducts.findProduct(item.getName()).getPrice() * item.getQuantity())
-                .sum();
     }
 
     public int calculateNonPromotionTotalPrice(TotalProducts totalProducts) {
