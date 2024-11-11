@@ -15,9 +15,8 @@ import java.util.List;
 
 public class ConvenienceController {
 
-    private AmountCalculator amountCalculator = new AmountCalculator();
-    private FileLoadService fileLoadService = new FileLoadService();
-
+    private final AmountCalculator amountCalculator = new AmountCalculator();
+    private final FileLoadService fileLoadService = new FileLoadService();
 
     public void run() {
         Promotions promotions = fileLoadService.loadPromotionFile();
