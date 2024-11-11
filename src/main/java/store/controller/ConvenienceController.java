@@ -1,6 +1,5 @@
 package store.controller;
 
-import camp.nextstep.edu.missionutils.Console;
 import store.domain.*;
 import store.dto.AdditionalBonusDto;
 import store.dto.PurchaseItemDto;
@@ -28,11 +27,9 @@ public class ConvenienceController {
 
             OutputView.requestProductAndQuantity();
             String productInfo = InputView.inputProductNameAndQuantity();
-
-            ShoppingCart shoppingCart = addPurchaseItemDtos(productInfo);
+            ShoppingCart shoppingCart = addPurchaseItem(productInfo);
 
             List<AdditionalBonusDto> bonusDtos = new ArrayList<>();
-
             processPromotionsForCartItems(shoppingCart, totalProducts, promotions, bonusDtos);
 
             int membershipDiscount = getMembershipDiscount(shoppingCart, totalProducts);
@@ -41,11 +38,16 @@ public class ConvenienceController {
             if (!attemptToReduceStock(shoppingCart, totalProducts)) continue;
 
             OutputView.printTotalReceipt(shoppingCart, totalProducts, bonusDtos, membershipDiscount);
-
-            OutputView.askIfBuyOtherProducts();
-            String otherBuyResponse = Console.readLine();
-            continueShopping = otherBuyResponse.equalsIgnoreCase("Y");
+            continueShopping = isContinueShopping();
         }
+    }
+
+    private boolean isContinueShopping() {
+        boolean continueShopping;
+        OutputView.askIfBuyOtherProducts();
+        String otherBuyResponse = InputView.inputWhetherToContinueShopping();
+        continueShopping = otherBuyResponse.equalsIgnoreCase("Y");
+        return continueShopping;
     }
 
     private boolean attemptToReduceStock(ShoppingCart shoppingCart, TotalProducts totalProducts) {
@@ -68,7 +70,7 @@ public class ConvenienceController {
         // 멤버십 할인 적용 여부
         int membershipDiscount = 0;
         OutputView.askForMembershipDiscount();
-        String response = InputView.askIfApplyMembershipDiscount();
+        String response = InputView.inputWhetherToApplyMembership();
         if (response.equalsIgnoreCase("Y")) {
             int totalPrice = shoppingCart.calculateNonPromotionTotalPrice(totalProducts);
             membershipDiscount = calculateMembershipDiscount(totalPrice);
@@ -76,7 +78,8 @@ public class ConvenienceController {
         return membershipDiscount;
     }
 
-    private void processPromotionsForCartItems(ShoppingCart shoppingCart, TotalProducts totalProducts, Promotions promotions, List<AdditionalBonusDto> bonusDtos) {
+    private void processPromotionsForCartItems(ShoppingCart shoppingCart, TotalProducts totalProducts,
+                                               Promotions promotions, List<AdditionalBonusDto> bonusDtos) {
         for (PurchaseItemDto purchaseItem : shoppingCart.getItems()) {
             Product product = totalProducts.findProduct(purchaseItem.getName());
             Promotion promotion = promotions.getPromotionConditionByName(product.getPromotionName());
@@ -94,7 +97,7 @@ public class ConvenienceController {
         if (product.getPromotionStock() > purchaseItem.getQuantity() + additionalBonusCount) {
             System.out.printf("현재 %s은(는) %d개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)%n",
                     product.getName(), additionalBonusCount);
-            String response = Console.readLine();
+            String response = InputView.inputWhetherToAddBonusQuantity();
 
             if (response.equalsIgnoreCase("Y")) {
                 int discountAmount = product.getPrice() * additionalBonusCount;
@@ -109,7 +112,7 @@ public class ConvenienceController {
             int nonDiscountedQuantity = getNonDiscountedQuantity(product, promotion, purchaseItem);
             System.out.printf("현재 %s %d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)%n",
                     product.getName(), nonDiscountedQuantity);
-            String response = Console.readLine();
+            String response = InputView.inputWhetherToPayFullPriceForSome();
 
             if (!response.equalsIgnoreCase("Y")) {
                 purchaseItem.excludeFromPurchase(true);
@@ -121,9 +124,8 @@ public class ConvenienceController {
         return product.getPromotionStock() % (promotion.getBuyCondition() + promotion.getGetCondition()) + (purchaseItem.getQuantity() - product.getPromotionStock());
     }
 
-    private ShoppingCart addPurchaseItemDtos(String productInfo) {
-        String[] items = productInfo.split(",");
-        return addPurchaseProducts(items);
+    private ShoppingCart addPurchaseItem(String productInfo) {
+        return addPurchaseProducts(productInfo.split(","));
     }
 
     private ShoppingCart addPurchaseProducts(String[] items) {
