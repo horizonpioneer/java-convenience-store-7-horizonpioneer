@@ -3,6 +3,7 @@ package store.controller;
 import store.domain.*;
 import store.dto.AdditionalBonusDto;
 import store.dto.PurchaseItemDto;
+import store.handler.InputHandler;
 import store.service.FileLoadService;
 import store.util.Converter;
 import store.view.InputView;
@@ -29,7 +30,7 @@ public class ConvenienceController {
             OutputView.printProductInfo(totalProducts);
 
             OutputView.requestProductAndQuantity();
-            String productInfo = InputView.inputProductNameAndQuantity();
+            String productInfo = InputHandler.receiveValidatedPurchaseInfo();
             ShoppingCart shoppingCart = addPurchaseItem(productInfo);
 
             List<AdditionalBonusDto> bonusDtos = new ArrayList<>();
