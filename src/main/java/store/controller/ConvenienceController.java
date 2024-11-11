@@ -33,38 +33,7 @@ public class ConvenienceController {
 
             List<AdditionalBonusDto> bonusDtos = new ArrayList<>();
 
-            for (PurchaseItemDto purchaseItem : shoppingCart.getItems()) {
-                Product product = totalProducts.findProduct(purchaseItem.getName());
-                // 여기서 프로모션 진행중이지 않을경우, 바로 멤버십 할인으로 넘어가야 할듯...?
-                Promotion promotion = promotions.getPromotionConditionByName(product.getPromotionName());
-                if (!product.isEqualPromotionName("null") && promotion.validateTodayInRange()) {
-                    int additionalBonusCount = promotion.calculateAdditionalBonus(purchaseItem.getQuantity());
-
-                    // 프로모션 적용이 가능한 상품에 대해 고객이 해당 수량만큼 가져오지 않았을 경우
-                    if (product.getPromotionStock() > purchaseItem.getQuantity() + additionalBonusCount) {
-                        System.out.printf("현재 %s은(는) %d개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)%n",
-                                product.getName(), additionalBonusCount);
-                        String response = Console.readLine();
-                        if (response.equalsIgnoreCase("Y")) {
-                            int discountAmount = product.getPrice() * additionalBonusCount;
-                            bonusDtos.add(new AdditionalBonusDto(product.getName(), additionalBonusCount, discountAmount));
-                        }
-                    }
-
-                    // 프로모션 재고가 부족하여 일부 수량을 프로모션 혜택 없이 결제해야 하는 경우
-                    if (product.getPromotionStock() < purchaseItem.getQuantity()) {
-                        int nonDiscountedQuantity = getNonDiscountedQuantity(product, promotion, purchaseItem);
-
-                        System.out.printf("현재 %s %d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)%n",
-                                product.getName(), nonDiscountedQuantity);
-                        String response = Console.readLine();
-                        // Y, N 만 입력하도록 하는 검증 메서드 필요
-                        if (!response.equalsIgnoreCase("Y")) {
-                            purchaseItem.excludeFromPurchase(true);
-                        }
-                    }
-                }
-            }
+            processPromotionsForCartItems(shoppingCart, totalProducts, promotions, bonusDtos);
 
             // 멤버십 할인 적용 여부
             int membershipDiscount = 0;
@@ -90,6 +59,47 @@ public class ConvenienceController {
             OutputView.askIfBuyOtherProducts();
             String otherBuyResponse = Console.readLine();
             continueShopping = otherBuyResponse.equalsIgnoreCase("Y");
+        }
+    }
+
+    private void processPromotionsForCartItems(ShoppingCart shoppingCart, TotalProducts totalProducts, Promotions promotions, List<AdditionalBonusDto> bonusDtos) {
+        for (PurchaseItemDto purchaseItem : shoppingCart.getItems()) {
+            Product product = totalProducts.findProduct(purchaseItem.getName());
+            Promotion promotion = promotions.getPromotionConditionByName(product.getPromotionName());
+
+            if (!product.isEqualPromotionName("null") && promotion.validateTodayInRange()) {
+                int additionalBonusCount = promotion.calculateAdditionalBonus(purchaseItem.getQuantity());
+                confirmBonusPromotion(bonusDtos, purchaseItem, product, additionalBonusCount);
+                confirmNonDiscountedPurchase(purchaseItem, product, promotion);
+            }
+        }
+    }
+
+    private void confirmBonusPromotion(List<AdditionalBonusDto> bonusDtos, PurchaseItemDto purchaseItem, Product product, int additionalBonusCount) {
+        // 프로모션 적용이 가능한 상품에 대해 고객이 해당 수량만큼 가져오지 않았을 경우
+        if (product.getPromotionStock() > purchaseItem.getQuantity() + additionalBonusCount) {
+            System.out.printf("현재 %s은(는) %d개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)%n",
+                    product.getName(), additionalBonusCount);
+            String response = Console.readLine();
+
+            if (response.equalsIgnoreCase("Y")) {
+                int discountAmount = product.getPrice() * additionalBonusCount;
+                bonusDtos.add(new AdditionalBonusDto(product.getName(), additionalBonusCount, discountAmount));
+            }
+        }
+    }
+
+    private void confirmNonDiscountedPurchase(PurchaseItemDto purchaseItem, Product product, Promotion promotion) {
+        // 프로모션 재고가 부족하여 일부 수량을 프로모션 혜택 없이 결제해야 하는 경우
+        if (product.getPromotionStock() < purchaseItem.getQuantity()) {
+            int nonDiscountedQuantity = getNonDiscountedQuantity(product, promotion, purchaseItem);
+            System.out.printf("현재 %s %d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)%n",
+                    product.getName(), nonDiscountedQuantity);
+            String response = Console.readLine();
+
+            if (!response.equalsIgnoreCase("Y")) {
+                purchaseItem.excludeFromPurchase(true);
+            }
         }
     }
 
