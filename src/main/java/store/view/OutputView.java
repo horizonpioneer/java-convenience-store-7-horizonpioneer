@@ -26,6 +26,53 @@ public class OutputView {
         System.out.println();
     }
 
+    private static String formatProductInfo(Product product) {
+        return formatPromotionStockInfo(product) + formatRegularStockInfo(product);
+    }
+
+    private static String formatPromotionStockInfo(Product product) {
+        if (product.hasPromotionStock()) {
+            return formatPromotionAvailable(product);
+        }
+
+        if (hasPromotionButNoStock(product)) {
+            return formatPromotionUnavailable(product);
+        }
+
+        return "";
+    }
+
+    private static String formatRegularStockInfo(Product product) {
+        if (product.hasStock()) {
+            return String.format("- %s %s원 %d개%n",
+                    product.getName(),
+                    formatPrice(product.getPrice()),
+                    product.getStock());
+        }
+        return String.format("- %s %s원 재고 없음%n",
+                product.getName(),
+                formatPrice(product.getPrice()));
+    }
+
+    private static String formatPromotionAvailable(Product product) {
+        return String.format("- %s %s원 %d개 %s%n",
+                product.getName(),
+                formatPrice(product.getPrice()),
+                product.getPromotionStock(),
+                product.getPromotionName());
+    }
+
+    private static boolean hasPromotionButNoStock(Product product) {
+        return !product.hasPromotionStock() && !product.getPromotionName().equals("null");
+    }
+
+    private static String formatPromotionUnavailable(Product product) {
+        return String.format("- %s %s원 재고 없음 %s%n",
+                product.getName(),
+                formatPrice(product.getPrice()),
+                product.getPromotionName());
+    }
+
     public static void requestProductAndQuantity() {
         System.out.println("구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])");
     }
@@ -66,106 +113,63 @@ public class OutputView {
 
     public static void printTotalPurchaseAmount(ShoppingCart shoppingCart, TotalProducts totalProducts,
                                                 List<AdditionalBonusDto> dtos) {
+        System.out.println("====================================");
         int totalQuantity = 0;
         int totalPrice = 0;
-        System.out.println("====================================");
         for (PurchaseItemDto item : shoppingCart.getItems()) {
             int productPrice = totalProducts.getProductPrice(item.getName());
             totalQuantity += item.getQuantity() + getBonusQuantity(dtos, item);
             totalPrice += (item.getQuantity() + getBonusQuantity(dtos, item)) * productPrice;
         }
-        System.out.printf("총구매액%15d%,14d%n", totalQuantity, totalPrice);
+        System.out.printf("총구매액%15s%14s%n", formatPrice(totalQuantity), formatPrice(totalPrice));
     }
 
     public static void printEventDiscount(List<AdditionalBonusDto> dtos) {
-        int totalDiscount = 0;
-        for (AdditionalBonusDto dto : dtos) {
-            totalDiscount += dto.getDiscountAmount();
-        }
+        int totalDiscount = getTotalDiscount(dtos);
         System.out.printf("행사할인%29s%n", formatPrice(-totalDiscount));
     }
 
     public static void printMembershipDiscount(int membershipDiscount) {
-        System.out.printf("멤버십할인%27s%n", formatPrice(-membershipDiscount));
+        System.out.printf("멤버십할인%28s%n", formatPrice(-membershipDiscount));
     }
 
     public static void printTotalPay(ShoppingCart shoppingCart, TotalProducts totalProducts,
                                      List<AdditionalBonusDto> dtos, int membershipDiscount) {
+        int totalPrice = getTotalPrice(shoppingCart, totalProducts, dtos);
+        int totalDiscount = getTotalDiscount(dtos);
+        int totalPay = totalPrice - totalDiscount - membershipDiscount;
+        String formatPrice = formatPrice(totalPay);
+        System.out.printf("내실돈%28s%n", formatPrice);
+    }
+
+    private static int getTotalPrice(ShoppingCart shoppingCart, TotalProducts totalProducts, List<AdditionalBonusDto> dtos) {
         int totalPrice = 0;
         for (PurchaseItemDto item : shoppingCart.getItems()) {
             int bonusQuantity = getBonusQuantity(dtos, item);
             int productPrice = totalProducts.getProductPrice(item.getName());
             totalPrice += (item.getQuantity() + bonusQuantity) * productPrice;
         }
+        return totalPrice;
+    }
 
+    private static int getTotalDiscount(List<AdditionalBonusDto> dtos) {
         int totalDiscount = 0;
         for (AdditionalBonusDto dto : dtos) {
             totalDiscount += dto.getDiscountAmount();
         }
-
-        int totalPay = totalPrice - totalDiscount - membershipDiscount;
-        String formatPrice = formatPrice(totalPay);
-        System.out.printf("내실돈%30s%n", formatPrice);
-    }
-
-    private static int getBonusQuantity(List<AdditionalBonusDto> dtos, PurchaseItemDto item) {
-        int bonusQuantity = dtos.stream()
-                .filter(bonus -> bonus.isEqualItemName(item.getName()))
-                .mapToInt(AdditionalBonusDto::getQuantity)
-                .findFirst()
-                .orElse(0);
-        return bonusQuantity;
+        return totalDiscount;
     }
 
     public static void askIfBuyOtherProducts() {
         System.out.println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
     }
 
-    private static String formatProductInfo(Product product) {
-        return formatPromotionStockInfo(product) + formatRegularStockInfo(product);
-    }
-
-    private static String formatPromotionStockInfo(Product product) {
-        if (product.hasPromotionStock()) {
-            return formatPromotionAvailable(product);
-        }
-
-        if (hasPromotionButNoStock(product)) {
-            return formatPromotionUnavailable(product);
-        }
-
-        return "";
-    }
-
-    private static boolean hasPromotionButNoStock(Product product) {
-        return !product.hasPromotionStock() && !product.getPromotionName().equals("null");
-    }
-
-    private static String formatPromotionUnavailable(Product product) {
-        return String.format("- %s %s원 재고 없음 %s%n",
-                product.getName(),
-                formatPrice(product.getPrice()),
-                product.getPromotionName());
-    }
-
-    private static String formatPromotionAvailable(Product product) {
-        return String.format("- %s %s원 %d개 %s%n",
-                product.getName(),
-                formatPrice(product.getPrice()),
-                product.getPromotionStock(),
-                product.getPromotionName());
-    }
-
-    private static String formatRegularStockInfo(Product product) {
-        if (product.hasStock()) {
-            return String.format("- %s %s원 %d개%n",
-                    product.getName(),
-                    formatPrice(product.getPrice()),
-                    product.getStock());
-        }
-        return String.format("- %s %s원 재고 없음%n",
-                product.getName(),
-                formatPrice(product.getPrice()));
+    private static int getBonusQuantity(List<AdditionalBonusDto> dtos, PurchaseItemDto item) {
+        return dtos.stream()
+                .filter(bonus -> bonus.isEqualItemName(item.getName()))
+                .mapToInt(AdditionalBonusDto::getQuantity)
+                .findFirst()
+                .orElse(0);
     }
 
     private static String formatPrice(int price) {
