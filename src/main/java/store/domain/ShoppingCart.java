@@ -26,13 +26,15 @@ public class ShoppingCart {
 
     public int calculateTotalPrice(TotalProducts totalProducts) {
         return items.stream()
+                .filter(item -> !item.isExcluded())
                 .mapToInt(item -> totalProducts.findProduct(item.getName()).getPrice() * item.getQuantity())
                 .sum();
     }
 
     public int calculateNonPromotionTotalPrice(TotalProducts totalProducts) {
         return items.stream()
-                .filter(item -> !totalProducts.findProduct(item.getName()).hasPromotion()) // 프로모션이 없는 상품만 선택
+                .filter(item -> !item.isExcluded())
+                .filter(item -> !totalProducts.findProduct(item.getName()).hasPromotion())
                 .mapToInt(item -> item.getQuantity() * totalProducts.findProduct(item.getName()).getPrice())
                 .sum();
     }
