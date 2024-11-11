@@ -14,10 +14,9 @@ public class TotalProducts {
         return totalProducts;
     }
 
-    public Product extractProduct(String name, int quantity) {
+    public void extractProduct(String name, int quantity) {
         Product product = findProduct(name);
         reduceProductQuantity(product, quantity);
-        return product;
     }
 
     public Product findProduct(String name) {
