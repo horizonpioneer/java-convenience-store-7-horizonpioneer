@@ -36,6 +36,9 @@ public class Promotion {
     }
 
     public int calculateAdditionalBonus(int purchaseQuantity) {
+        if (purchaseQuantity < buyCondition) {
+            return 0;
+        }
         return (buyCondition + getCondition) * (purchaseQuantity / buyCondition) - purchaseQuantity;
     }
 
