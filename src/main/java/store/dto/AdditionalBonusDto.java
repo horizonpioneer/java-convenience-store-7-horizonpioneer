@@ -22,4 +22,8 @@ public class AdditionalBonusDto {
     public int getDiscountAmount() {
         return discountAmount;
     }
+
+    public boolean isEqualItemName(String itemName) {
+        return name.equals(itemName);
+    }
 }
