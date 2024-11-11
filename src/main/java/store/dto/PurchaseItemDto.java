@@ -3,7 +3,7 @@ package store.dto;
 public class PurchaseItemDto {
 
     private final String name;
-    private int quantity;
+    private final int quantity;
     private boolean excludeFromPurchase = false;
 
     public PurchaseItemDto(String name, int quantity) {
