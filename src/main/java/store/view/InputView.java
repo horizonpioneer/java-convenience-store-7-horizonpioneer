@@ -8,19 +8,19 @@ public class InputView {
         return Console.readLine();
     }
 
-    public static String askIfAddRemainingQuantityForPromotion() {
+    public static String inputWhetherToAddBonusQuantity() {
         return Console.readLine();
     }
 
-    public static String askIfPayFullPriceForSomeQuantity() {
+    public static String inputWhetherToPayFullPriceForSome() {
         return Console.readLine();
     }
 
-    public static String askIfApplyMembershipDiscount() {
+    public static String inputWhetherToApplyMembership() {
         return Console.readLine();
     }
 
-    public static String askIfWantToBuyMore() {
+    public static String inputWhetherToContinueShopping() {
         return Console.readLine();
     }
 }
