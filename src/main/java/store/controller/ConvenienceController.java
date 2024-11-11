@@ -15,7 +15,6 @@ import java.util.List;
 
 public class ConvenienceController {
 
-    private final AmountCalculator amountCalculator = new AmountCalculator();
     private final FileLoadService fileLoadService = new FileLoadService();
 
     public void run() {
@@ -73,7 +72,7 @@ public class ConvenienceController {
             String response = InputView.askIfApplyMembershipDiscount();
             if (response.equalsIgnoreCase("Y")) {
                 int totalPrice = shoppingCart.calculateNonPromotionTotalPrice(totalProducts);
-                membershipDiscount = amountCalculator.calculateMembershipDiscount(totalPrice);
+                membershipDiscount = calculateMembershipDiscount(totalPrice);
             }
 
             // 재고 감소 및 재고 부족 예외 처리
@@ -112,6 +111,12 @@ public class ConvenienceController {
             shoppingCart.add(new PurchaseItemDto(name, quantity));
         }
         return new ShoppingCart(shoppingCart);
+    }
+
+    private int calculateMembershipDiscount(int nonPromotionTotalPrice) {
+        int discount = (nonPromotionTotalPrice * 30) / 100;
+
+        return Math.min(discount, 8000);
     }
 }
 
