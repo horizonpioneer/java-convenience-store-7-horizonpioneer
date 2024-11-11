@@ -35,14 +35,7 @@ public class ConvenienceController {
 
             processPromotionsForCartItems(shoppingCart, totalProducts, promotions, bonusDtos);
 
-            // 멤버십 할인 적용 여부
-            int membershipDiscount = 0;
-            OutputView.askForMembershipDiscount();
-            String response = InputView.askIfApplyMembershipDiscount();
-            if (response.equalsIgnoreCase("Y")) {
-                int totalPrice = shoppingCart.calculateNonPromotionTotalPrice(totalProducts);
-                membershipDiscount = calculateMembershipDiscount(totalPrice);
-            }
+            int membershipDiscount = getMembershipDiscount(shoppingCart, totalProducts);
 
             // 재고 감소 및 재고 부족 예외 처리
             try {
@@ -60,6 +53,18 @@ public class ConvenienceController {
             String otherBuyResponse = Console.readLine();
             continueShopping = otherBuyResponse.equalsIgnoreCase("Y");
         }
+    }
+
+    private int getMembershipDiscount(ShoppingCart shoppingCart, TotalProducts totalProducts) {
+        // 멤버십 할인 적용 여부
+        int membershipDiscount = 0;
+        OutputView.askForMembershipDiscount();
+        String response = InputView.askIfApplyMembershipDiscount();
+        if (response.equalsIgnoreCase("Y")) {
+            int totalPrice = shoppingCart.calculateNonPromotionTotalPrice(totalProducts);
+            membershipDiscount = calculateMembershipDiscount(totalPrice);
+        }
+        return membershipDiscount;
     }
 
     private void processPromotionsForCartItems(ShoppingCart shoppingCart, TotalProducts totalProducts, Promotions promotions, List<AdditionalBonusDto> bonusDtos) {
