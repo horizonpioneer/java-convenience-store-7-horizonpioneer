@@ -39,9 +39,9 @@ public class Product {
     public void addStock(int quantity, boolean isPromotion) {
         if (isPromotion) {
             promotionStock += quantity;
-        } else {
-            stock += quantity;
+            return;
         }
+        stock += quantity;
     }
 
     public boolean hasStock() {
@@ -70,10 +70,6 @@ public class Product {
         }
         amount = decreasePromotionStock(amount);
         decreaseRegularStock(amount);
-    }
-
-    public int getTotalStock() {
-        return promotionStock + stock;
     }
 
     private int decreasePromotionStock(int amount) {
