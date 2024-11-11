@@ -1,12 +1,10 @@
 package store.dto;
 
-import store.domain.Product;
-import store.domain.TotalProducts;
-
 public class PurchaseItemDto {
 
     private final String name;
     private int quantity;
+    private boolean excludeFromPurchase = false;
 
     public PurchaseItemDto(String name, int quantity) {
         this.name = name;
@@ -21,12 +19,7 @@ public class PurchaseItemDto {
         return quantity;
     }
 
-    public void addQuantity(int additionalQuantity) {
-        quantity++;
-    }
-
-    public int calculatePrice(TotalProducts totalProducts) {
-        Product product = totalProducts.findProduct(name);
-        return product.getPrice() * quantity;
+    public boolean isExcluded() {
+        return excludeFromPurchase;
     }
 }
