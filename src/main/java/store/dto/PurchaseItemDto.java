@@ -22,4 +22,8 @@ public class PurchaseItemDto {
     public boolean isExcluded() {
         return excludeFromPurchase;
     }
+
+    public void excludeFromPurchase(boolean exclude) {
+        this.excludeFromPurchase = exclude;
+    }
 }
