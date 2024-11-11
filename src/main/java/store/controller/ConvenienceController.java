@@ -14,6 +14,9 @@ import java.util.List;
 
 public class ConvenienceController {
 
+    private static final int MEMBERSHIP_DISCOUNT_PERCENT = 30;
+    private static final int MAX_MEMBERSHIP_DISCOUNT_AMOUNT = 30;
+
     private final FileLoadService fileLoadService = new FileLoadService();
 
     public void run() {
@@ -140,9 +143,9 @@ public class ConvenienceController {
     }
 
     private int calculateMembershipDiscount(int nonPromotionTotalPrice) {
-        int discount = (nonPromotionTotalPrice * 30) / 100;
+        int discount = (nonPromotionTotalPrice * MEMBERSHIP_DISCOUNT_PERCENT) / 100;
 
-        return Math.min(discount, 8000);
+        return Math.min(discount, MAX_MEMBERSHIP_DISCOUNT_AMOUNT);
     }
 }
 
