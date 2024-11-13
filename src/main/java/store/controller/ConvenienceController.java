@@ -16,7 +16,7 @@ import java.util.List;
 public class ConvenienceController {
 
     private static final int MEMBERSHIP_DISCOUNT_PERCENT = 30;
-    private static final int MAX_MEMBERSHIP_DISCOUNT_AMOUNT = 30;
+    private static final int MAX_MEMBERSHIP_DISCOUNT_AMOUNT = 8_000;
 
     private final FileLoadService fileLoadService = new FileLoadService();
 
